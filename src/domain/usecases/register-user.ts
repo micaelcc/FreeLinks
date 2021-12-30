@@ -11,7 +11,7 @@ type User = UserModel & {
 };
 
 interface IRegisterUser {
-  execute(data: UserModel): Promise<User>;
+  execute(data: UserModel): Promise<boolean>;
 }
 
 export { IRegisterUser, UserModel, User };

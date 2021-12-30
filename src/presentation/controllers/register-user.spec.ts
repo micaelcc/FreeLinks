@@ -2,13 +2,15 @@ import { IRegisterUser, User, UserModel } from 'domain/usecases/register-user';
 
 import { RegisterUserController } from './register-user';
 
-const makeSut = (): any => {
+type SutTypes = {
+  sut: RegisterUserController;
+  registerUserStub: IRegisterUser;
+};
+
+const makeSut = (): SutTypes => {
   class RegisterUserStub implements IRegisterUser {
-    async execute(data: UserModel): Promise<User> {
-      return {
-        ...data,
-        id: 'valid_id',
-      };
+    async execute(data: UserModel): Promise<boolean> {
+      return true;
     }
   }
 
