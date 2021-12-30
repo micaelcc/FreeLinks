@@ -1,18 +1,15 @@
-import { badRequest } from 'presentation/helpers/http-codes';
-import { HttpRequest, HttpResponse } from 'presentation/protocols/http';
+import { badRequest } from '../helpers/http-codes';
+import { HttpRequest, HttpResponse } from '../protocols/http';
 
 class RegisterUserController {
   async handle(request: HttpRequest): Promise<HttpResponse> {
-    if (!request.body.name) {
-      return badRequest(new Error('Missing param: name'));
-    }
+    const fields = ['name', 'nickname', 'email'];
 
-    if (!request.body.nickname) {
-      return badRequest(new Error('Missing param: nickname'));
-    }
-
-    if (!request.body.email) {
-      return badRequest(new Error('Missing param: email'));
+    // eslint-disable-next-line no-restricted-syntax
+    for (const field of fields) {
+      if (!request.body[field]) {
+        return badRequest(new Error(`Missing param: ${field}`));
+      }
     }
 
     return undefined;
