@@ -1,8 +1,29 @@
+import { IRegisterUser, User, UserModel } from 'domain/usecases/register-user';
+
 import { RegisterUserController } from './register-user';
+
+const makeSut = (): any => {
+  class RegisterUserStub implements IRegisterUser {
+    async execute(data: UserModel): Promise<User> {
+      return {
+        ...data,
+        id: 'valid_id',
+      };
+    }
+  }
+
+  const registerUserStub = new RegisterUserStub();
+  const sut = new RegisterUserController(registerUserStub);
+
+  return {
+    registerUserStub,
+    sut,
+  };
+};
 
 describe('Register User', () => {
   test('Should return 400 if no name is provided', async () => {
-    const sut = new RegisterUserController();
+    const { sut } = makeSut();
 
     const httpRequest = {
       body: {
@@ -20,7 +41,7 @@ describe('Register User', () => {
   });
 
   test('Should return 400 if no nickname is provided', async () => {
-    const sut = new RegisterUserController();
+    const { sut } = makeSut();
 
     const httpRequest = {
       body: {
@@ -38,7 +59,7 @@ describe('Register User', () => {
   });
 
   test('Should return 400 if no email is provided', async () => {
-    const sut = new RegisterUserController();
+    const { sut } = makeSut();
 
     const httpRequest = {
       body: {
@@ -56,7 +77,7 @@ describe('Register User', () => {
   });
 
   test('Should return 400 if no password is provided', async () => {
-    const sut = new RegisterUserController();
+    const { sut } = makeSut();
 
     const httpRequest = {
       body: {
@@ -74,7 +95,7 @@ describe('Register User', () => {
   });
 
   test('Should return 400 if no passwordConfirmation is provided', async () => {
-    const sut = new RegisterUserController();
+    const { sut } = makeSut();
 
     const httpRequest = {
       body: {
@@ -94,7 +115,7 @@ describe('Register User', () => {
   });
 
   test('Should return 400 if password confirmation fails', async () => {
-    const sut = new RegisterUserController();
+    const { sut } = makeSut();
 
     const httpRequest = {
       body: {
@@ -112,5 +133,28 @@ describe('Register User', () => {
     expect(httpResponse.data).toEqual(
       new Error('Invalid param: passwordConfirmation'),
     );
+  });
+
+  test('Should return 500 if RegisterUser.execute throws', async () => {
+    const { sut, registerUserStub } = makeSut();
+
+    jest.spyOn(registerUserStub, 'execute').mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        nickname: 'any_nickname',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+      },
+    };
+
+    const httpResponse = await sut.handle(httpRequest);
+
+    expect(httpResponse.statusCode).toBe(500);
+    expect(httpResponse.data).toEqual(new Error());
   });
 });
