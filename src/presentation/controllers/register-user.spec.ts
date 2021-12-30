@@ -16,7 +16,7 @@ describe('Register User', () => {
     const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(400);
-    expect(httpResponse.body).toEqual(new Error('Missing param: name'));
+    expect(httpResponse.data).toEqual(new Error('Missing param: name'));
   });
 
   test('Should return 400 if no nickname is provided', async () => {
@@ -34,7 +34,7 @@ describe('Register User', () => {
     const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(400);
-    expect(httpResponse.body).toEqual(new Error('Missing param: nickname'));
+    expect(httpResponse.data).toEqual(new Error('Missing param: nickname'));
   });
 
   test('Should return 400 if no email is provided', async () => {
@@ -52,6 +52,6 @@ describe('Register User', () => {
     const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(400);
-    expect(httpResponse.body).toEqual(new Error('Missing param: email'));
+    expect(httpResponse.data).toEqual(new Error('Missing param: email'));
   });
 });

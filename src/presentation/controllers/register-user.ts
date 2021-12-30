@@ -1,27 +1,25 @@
-type HttpRequest = {
-  body?: any;
-};
+import { HttpRequest, HttpResponse } from 'presentation/protocols/http';
 
 class RegisterUserController {
-  async handle(request: HttpRequest): Promise<any> {
+  async handle(request: HttpRequest): Promise<HttpResponse> {
     if (!request.body.name) {
       return {
         statusCode: 400,
-        body: new Error('Missing param: name'),
+        data: new Error('Missing param: name'),
       };
     }
 
     if (!request.body.nickname) {
       return {
         statusCode: 400,
-        body: new Error('Missing param: nickname'),
+        data: new Error('Missing param: nickname'),
       };
     }
 
     if (!request.body.email) {
       return {
         statusCode: 400,
-        body: new Error('Missing param: email'),
+        data: new Error('Missing param: email'),
       };
     }
 
