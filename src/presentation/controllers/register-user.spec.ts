@@ -92,4 +92,25 @@ describe('Register User', () => {
       new Error('Missing param: passwordConfirmation'),
     );
   });
+
+  test('Should return 400 if password confirmation fails', async () => {
+    const sut = new RegisterUserController();
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        nickname: 'any_nickname',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'invalid_password',
+      },
+    };
+
+    const httpResponse = await sut.handle(httpRequest);
+
+    expect(httpResponse.statusCode).toBe(400);
+    expect(httpResponse.data).toEqual(
+      new Error('Invalid param: passwordConfirmation'),
+    );
+  });
 });
