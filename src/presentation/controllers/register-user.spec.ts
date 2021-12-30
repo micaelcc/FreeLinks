@@ -157,4 +157,24 @@ describe('Register User', () => {
     expect(httpResponse.statusCode).toBe(500);
     expect(httpResponse.data).toEqual(new Error());
   });
+
+  test('Should call RegisterUser with correct values', async () => {
+    const { sut, registerUserStub } = makeSut();
+
+    const executeSpy = jest.spyOn(registerUserStub, 'execute');
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        nickname: 'any_nickname',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+      },
+    };
+
+    await sut.handle(httpRequest);
+
+    expect(executeSpy).toHaveBeenCalledWith(httpRequest.body);
+  });
 });
