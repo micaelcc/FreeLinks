@@ -1,7 +1,7 @@
 import { RegisterUserController } from './register-user';
 
 describe('Register User', () => {
-  test('Should return 400 if no name is provided', () => {
+  test('Should return 400 if no name is provided', async () => {
     const sut = new RegisterUserController();
 
     const httpRequest = {
@@ -13,13 +13,13 @@ describe('Register User', () => {
       },
     };
 
-    const httpResponse = sut.handle(httpRequest);
+    const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(400);
     expect(httpResponse.body).toEqual(new Error('Missing param: name'));
   });
 
-  test('Should return 400 if no nickname is provided', () => {
+  test('Should return 400 if no nickname is provided', async () => {
     const sut = new RegisterUserController();
 
     const httpRequest = {
@@ -31,13 +31,13 @@ describe('Register User', () => {
       },
     };
 
-    const httpResponse = sut.handle(httpRequest);
+    const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(400);
     expect(httpResponse.body).toEqual(new Error('Missing param: nickname'));
   });
 
-  test('Should return 400 if no email is provided', () => {
+  test('Should return 400 if no email is provided', async () => {
     const sut = new RegisterUserController();
 
     const httpRequest = {
@@ -49,7 +49,7 @@ describe('Register User', () => {
       },
     };
 
-    const httpResponse = sut.handle(httpRequest);
+    const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse.statusCode).toBe(400);
     expect(httpResponse.body).toEqual(new Error('Missing param: email'));
