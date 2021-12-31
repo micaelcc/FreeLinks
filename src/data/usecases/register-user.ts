@@ -1,16 +1,26 @@
-import { IFindUserByNick } from 'data/protocols/register-user-repository';
+import { IUsersRepository } from 'data/protocols/users-repository';
 import { IRegisterUser, User, UserModel } from 'domain/usecases/register-user';
 
 class RegisterUser implements IRegisterUser {
-  constructor(private readonly findUserByNick: IFindUserByNick) {}
+  constructor(private readonly usersRepository: IUsersRepository) {}
   async execute(data: UserModel): Promise<boolean> {
     if (data.password !== data.passwordConfirmation) {
       return false;
     }
 
-    const nickAlreadyExists = this.findUserByNick.find(data.nickname);
+    const nickAlreadyExists = await this.usersRepository.findByNick(
+      data.nickname,
+    );
 
     if (nickAlreadyExists) {
+      return false;
+    }
+
+    const emailAlreadyExists = await this.usersRepository.findByEmail(
+      data.email,
+    );
+
+    if (emailAlreadyExists) {
       return false;
     }
 

@@ -6,8 +6,12 @@ type UserModel = {
   passwordConfirmation: string;
 };
 
-type User = UserModel & {
+type User = {
   id: string;
+  name: string;
+  nickname: string;
+  email: string;
+  password: string;
 };
 
 interface IRegisterUser {
