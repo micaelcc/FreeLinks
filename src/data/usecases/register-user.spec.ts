@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { IEncrypter } from 'data/protocols/encrypter';
 import { IUsersRepository } from 'data/protocols/users-repository';
-import { User } from 'domain/usecases/register-user';
+import { User, UserModel } from 'domain/usecases/register-user';
 
 import { RegisterUser } from './register-user';
 
@@ -29,6 +29,15 @@ const makeUsersRepositoryStub = (): IUsersRepository => {
 
     async findByEmail(email: string): Promise<User[] | undefined> {
       return undefined;
+    }
+
+    async save(data: UserModel): Promise<User> {
+      const fakeUser = {
+        ...data,
+        id: 'valid_id',
+      };
+
+      return new Promise(resolve => resolve(fakeUser));
     }
   }
 
@@ -167,5 +176,31 @@ describe('RegisterUser', () => {
     const promise = sut.execute(httpRequest.body);
 
     await expect(promise).rejects.toThrow();
+  });
+
+  test('Should call UsersRepository.save with correct values', async () => {
+    const { sut, usersRepositoryStub } = makeSut();
+
+    const saveUserSpy = jest.spyOn(usersRepositoryStub, 'save');
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        nickname: 'any_nickname',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+      },
+    };
+
+    await sut.execute(httpRequest.body);
+
+    expect(saveUserSpy).toHaveBeenCalledWith({
+      name: 'any_name',
+      nickname: 'any_nickname',
+      email: 'any_email@mail.com',
+      password: 'hashed_password',
+      passwordConfirmation: 'any_password',
+    });
   });
 });
