@@ -144,4 +144,28 @@ describe('RegisterUser', () => {
 
     expect(encrypterSpy).toHaveBeenCalledWith('any_password');
   });
+
+  test('Should throw if Encrypter throws', async () => {
+    const { sut, encrypterStub } = makeSut();
+
+    jest
+      .spyOn(encrypterStub, 'encrypt')
+      .mockReturnValueOnce(
+        new Promise((resolve, reject) => reject(new Error())),
+      );
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        nickname: 'any_nickname',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+      },
+    };
+
+    const promise = sut.execute(httpRequest.body);
+
+    await expect(promise).rejects.toThrow();
+  });
 });
