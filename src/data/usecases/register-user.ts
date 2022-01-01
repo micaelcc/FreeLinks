@@ -1,18 +1,45 @@
-import { IFindUserByNick } from 'data/protocols/register-user-repository';
+import { IEncrypter } from 'data/protocols/encrypter';
+import { IUsersRepository } from 'data/protocols/users-repository';
 import { IRegisterUser, User, UserModel } from 'domain/usecases/register-user';
 
 class RegisterUser implements IRegisterUser {
-  constructor(private readonly findUserByNick: IFindUserByNick) {}
-  async execute(data: UserModel): Promise<boolean> {
-    if (data.password !== data.passwordConfirmation) {
+  constructor(
+    private readonly usersRepository: IUsersRepository,
+    private readonly encrypter: IEncrypter,
+  ) {}
+
+  async execute({
+    name,
+    nickname,
+    email,
+    password,
+    passwordConfirmation,
+  }: UserModel): Promise<boolean> {
+    if (password !== passwordConfirmation) {
       return false;
     }
 
-    const nickAlreadyExists = this.findUserByNick.find(data.nickname);
+    const nickAlreadyExists = await this.usersRepository.findByNick(nickname);
 
     if (nickAlreadyExists) {
       return false;
     }
+
+    const emailAlreadyExists = await this.usersRepository.findByEmail(email);
+
+    if (emailAlreadyExists) {
+      return false;
+    }
+
+    const hashedPassword = await this.encrypter.encrypt(password);
+
+    await this.usersRepository.save({
+      name,
+      email,
+      nickname,
+      password: hashedPassword,
+      passwordConfirmation,
+    });
 
     return true;
   }
