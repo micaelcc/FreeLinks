@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+import { IEncrypter } from 'data/protocols/encrypter';
 import { IUsersRepository } from 'data/protocols/users-repository';
 import { User } from 'domain/usecases/register-user';
 
@@ -6,6 +8,17 @@ import { RegisterUser } from './register-user';
 type SutTypes = {
   sut: RegisterUser;
   usersRepositoryStub: IUsersRepository;
+  encrypterStub: IEncrypter;
+};
+
+const makeEncrypterStub = (): IEncrypter => {
+  class EncrypterStub implements IEncrypter {
+    async encrypt(value: string): Promise<string> {
+      return new Promise(resolve => resolve('hashed_password'));
+    }
+  }
+
+  return new EncrypterStub();
 };
 
 const makeUsersRepositoryStub = (): IUsersRepository => {
@@ -24,11 +37,13 @@ const makeUsersRepositoryStub = (): IUsersRepository => {
 
 const makeSut = (): SutTypes => {
   const usersRepositoryStub = makeUsersRepositoryStub();
-  const sut = new RegisterUser(usersRepositoryStub);
+  const encrypterStub = makeEncrypterStub();
+  const sut = new RegisterUser(usersRepositoryStub, encrypterStub);
 
   return {
     sut,
     usersRepositoryStub,
+    encrypterStub,
   };
 };
 describe('RegisterUser', () => {
@@ -108,5 +123,25 @@ describe('RegisterUser', () => {
     const httpResponse = await sut.execute(httpRequest.body);
 
     expect(httpResponse).toBe(false);
+  });
+
+  test('Should call Encrypter with correct password', async () => {
+    const { sut, encrypterStub } = makeSut();
+
+    const encrypterSpy = jest.spyOn(encrypterStub, 'encrypt');
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        nickname: 'any_nickname',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+      },
+    };
+
+    await sut.execute(httpRequest.body);
+
+    expect(encrypterSpy).toHaveBeenCalledWith('any_password');
   });
 });
