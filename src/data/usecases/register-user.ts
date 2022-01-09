@@ -1,6 +1,6 @@
 import { IEncrypter } from 'data/protocols/encrypter';
 import { IUsersRepository } from 'data/protocols/users-repository';
-import { IRegisterUser, User, UserModel } from 'domain/usecases/register-user';
+import { IRegisterUser, UserModel } from 'domain/usecases/register-user';
 
 class RegisterUser implements IRegisterUser {
   constructor(
