@@ -3,7 +3,7 @@ type UserModel = {
   nickname: string;
   email: string;
   password: string;
-  passwordConfirmation: string;
+  passwordConfirmation?: string;
 };
 
 type User = {
