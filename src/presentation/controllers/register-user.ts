@@ -1,9 +1,10 @@
 import { IRegisterUser } from 'domain/usecases/register-user';
+import { IController } from 'presentation/protocols/base-controller';
 
 import { badRequest, serverError, ok } from '../helpers/http-codes';
 import { HttpRequest, HttpResponse } from '../protocols/http';
 
-class RegisterUserController {
+class RegisterUserController implements IController {
   constructor(private readonly registerUser: IRegisterUser) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
