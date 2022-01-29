@@ -1,13 +1,19 @@
-import { IUsersRepository } from 'data/protocols/users-repository';
-import { User, UserModel } from 'domain/usecases/register-user';
+import { IUsersRepository, UserDTO } from 'data/protocols/users-repository';
+import { User } from 'domain/usecases/register-user';
 
 import { MongoHelper } from '../helpers/mongo-helper';
 
 class UsersMongoRepository implements IUsersRepository {
-  async save(data: UserModel): Promise<User> {
+  async save(data: UserDTO): Promise<User> {
     const usersCollection = MongoHelper.getCollection('users');
 
-    const { insertedId } = await usersCollection.insertOne(data);
+    const { insertedId } = await usersCollection.insertOne({
+      name: data.name,
+      email: data.email,
+      nickname: data.nickname,
+      password: data.password,
+      links: data.links,
+    });
 
     const { _id, ...userWithoutId } = await usersCollection.findOne({
       _id: insertedId,

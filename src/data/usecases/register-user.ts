@@ -39,6 +39,7 @@ class RegisterUser implements IRegisterUser {
       nickname,
       password: hashedPassword,
       passwordConfirmation,
+      links: [],
     });
 
     return true;
