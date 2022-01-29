@@ -12,6 +12,7 @@ type User = {
   nickname: string;
   email: string;
   password: string;
+  links: string[];
 };
 
 interface IRegisterUser {
