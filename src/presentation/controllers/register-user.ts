@@ -34,7 +34,7 @@ class RegisterUserController implements IController {
 
       return ok();
     } catch (error) {
-      return serverError(new Error());
+      return serverError(error);
     }
   }
 }

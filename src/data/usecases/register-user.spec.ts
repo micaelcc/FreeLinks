@@ -34,6 +34,7 @@ const makeUsersRepositoryStub = (): IUsersRepository => {
     async save(data: UserModel): Promise<User> {
       const fakeUser = {
         ...data,
+        links: ['link1', 'link2'],
         id: 'valid_id',
       };
 
@@ -83,6 +84,7 @@ describe('RegisterUser', () => {
       nickname: 'invalid_nickname',
       email: 'user_email@mail.com',
       password: 'hashed_password',
+      links: [],
     };
 
     jest
@@ -113,6 +115,7 @@ describe('RegisterUser', () => {
       nickname: 'user_nickname',
       email: 'invalid_email@mail.com',
       password: 'hashed_password',
+      links: [],
     };
 
     jest
@@ -190,6 +193,7 @@ describe('RegisterUser', () => {
         email: 'any_email@mail.com',
         password: 'any_password',
         passwordConfirmation: 'any_password',
+        links: [],
       },
     };
 
@@ -201,6 +205,7 @@ describe('RegisterUser', () => {
       email: 'any_email@mail.com',
       password: 'hashed_password',
       passwordConfirmation: 'any_password',
+      links: [],
     });
   });
 });

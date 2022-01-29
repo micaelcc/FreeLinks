@@ -24,6 +24,7 @@ describe('Users Mongo Repository', () => {
       nickname: 'any_nickname',
       email: 'any_email',
       password: 'any_password',
+      links: [],
     });
 
     expect(user).toBeTruthy();
@@ -32,5 +33,6 @@ describe('Users Mongo Repository', () => {
     expect(user.nickname).toEqual('any_nickname');
     expect(user.email).toEqual('any_email');
     expect(user.password).toEqual('any_password');
+    expect(user.links).toEqual([]);
   });
 });
