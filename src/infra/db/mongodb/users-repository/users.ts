@@ -1,9 +1,12 @@
 import { IUsersRepository, UserDTO } from 'data/protocols/users-repository';
 import { User } from 'domain/usecases/register-user';
+import { Collection } from 'mongodb';
 
 import { MongoHelper } from '../helpers/mongo-helper';
 
 class UsersMongoRepository implements IUsersRepository {
+  public usersCollection: Collection;
+
   async save(data: UserDTO): Promise<User> {
     const usersCollection = MongoHelper.getCollection('users');
 
@@ -25,12 +28,16 @@ class UsersMongoRepository implements IUsersRepository {
     } as User;
   }
 
-  async findByEmail(email: string): Promise<User[] | undefined> {
-    return new Promise(resolve => resolve(null));
+  async findByEmail(email: string): Promise<User | undefined> {
+    const usersCollection = MongoHelper.getCollection('users');
+
+    return usersCollection.findOne<User>({ email });
   }
 
-  async findByNick(nickname: string): Promise<User[] | undefined> {
-    return new Promise(resolve => resolve(null));
+  async findByNick(nickname: string): Promise<User | undefined> {
+    const usersCollection = MongoHelper.getCollection('users');
+
+    return usersCollection.findOne<User>({ nickname });
   }
 }
 
