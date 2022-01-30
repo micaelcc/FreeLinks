@@ -1,6 +1,7 @@
-import { IEncrypter } from 'data/protocols/encrypter';
-import { IUsersRepository } from 'data/protocols/users-repository';
-import { IRegisterUser, UserModel } from 'domain/usecases/register-user';
+import { IRegisterUser, UserModel } from '../../domain/usecases/register-user';
+import { AppError } from '../../presentation/errors/app-error';
+import { IEncrypter } from '../protocols/encrypter';
+import { IUsersRepository } from '../protocols/users-repository';
 
 class RegisterUser implements IRegisterUser {
   constructor(
@@ -14,21 +15,21 @@ class RegisterUser implements IRegisterUser {
     email,
     password,
     passwordConfirmation,
-  }: UserModel): Promise<boolean> {
+  }: UserModel): Promise<void> {
     if (password !== passwordConfirmation) {
-      return false;
+      throw new AppError('Password confirmation fails', 400);
     }
 
     const nickAlreadyExists = await this.usersRepository.findByNick(nickname);
 
     if (nickAlreadyExists) {
-      return false;
+      throw new AppError('Nickname already exists', 409);
     }
 
     const emailAlreadyExists = await this.usersRepository.findByEmail(email);
 
     if (emailAlreadyExists) {
-      return false;
+      throw new AppError('Email already exists', 409);
     }
 
     const hashedPassword = await this.encrypter.encrypt(password);
@@ -41,8 +42,6 @@ class RegisterUser implements IRegisterUser {
       passwordConfirmation,
       links: [],
     });
-
-    return true;
   }
 }
 
