@@ -1,7 +1,7 @@
 import { IRegisterUser } from 'domain/usecases/register-user';
 import { IController } from 'presentation/protocols/base-controller';
 
-import { badRequest, serverError, ok } from '../helpers/http-codes';
+import { badRequest, clientError, ok } from '../helpers/http-codes';
 import { HttpRequest, HttpResponse } from '../protocols/http';
 
 class RegisterUserController implements IController {
@@ -17,8 +17,6 @@ class RegisterUserController implements IController {
         'passwordConfirmation',
       ];
 
-      const { password, passwordConfirmation } = request.body;
-
       // eslint-disable-next-line no-restricted-syntax
       for (const field of fields) {
         if (!request.body[field]) {
@@ -26,15 +24,11 @@ class RegisterUserController implements IController {
         }
       }
 
-      if (password !== passwordConfirmation) {
-        return badRequest(new Error('Invalid param: passwordConfirmation'));
-      }
-
       await this.registerUser.execute(request.body);
 
       return ok();
     } catch (error) {
-      return serverError(error);
+      return clientError(error);
     }
   }
 }

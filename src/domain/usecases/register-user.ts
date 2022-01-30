@@ -16,7 +16,7 @@ type User = {
 };
 
 interface IRegisterUser {
-  execute(data: UserModel): Promise<boolean>;
+  execute(data: UserModel): Promise<void>;
 }
 
 export { IRegisterUser, UserModel, User };
