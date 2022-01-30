@@ -5,7 +5,7 @@ export type UserDTO = UserModel & {
 };
 
 export interface IUsersRepository {
-  findByNick(nick: string): Promise<User[] | undefined>;
-  findByEmail(email: string): Promise<User[] | undefined>;
+  findByNick(nick: string): Promise<User | undefined>;
+  findByEmail(email: string): Promise<User | undefined>;
   save(data: UserDTO): Promise<User>;
 }
