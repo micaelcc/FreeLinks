@@ -9,9 +9,8 @@ type SutTypes = {
 
 const makeSut = (): SutTypes => {
   class RegisterUserStub implements IRegisterUser {
-    async execute(data: UserModel): Promise<boolean> {
-      return true;
-    }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    async execute(data: UserModel): Promise<void> {}
   }
 
   const registerUserStub = new RegisterUserStub();
