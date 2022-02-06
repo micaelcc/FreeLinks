@@ -23,11 +23,11 @@ const makeEncrypterStub = (): IEncrypter => {
 
 const makeUsersRepositoryStub = (): IUsersRepository => {
   class UsersRepository implements IUsersRepository {
-    async findByNick(nick: string): Promise<User[] | undefined> {
+    async findByNick(nick: string): Promise<User | undefined> {
       return undefined;
     }
 
-    async findByEmail(email: string): Promise<User[] | undefined> {
+    async findByEmail(email: string): Promise<User | undefined> {
       return undefined;
     }
 
@@ -89,7 +89,7 @@ describe('RegisterUser', () => {
 
     jest
       .spyOn(usersRepositoryStub, 'findByNick')
-      .mockReturnValueOnce(new Promise(resolve => resolve([fakeUser])));
+      .mockReturnValueOnce(new Promise(resolve => resolve(fakeUser)));
 
     const httpRequest = {
       body: {
@@ -120,7 +120,7 @@ describe('RegisterUser', () => {
 
     jest
       .spyOn(usersRepositoryStub, 'findByEmail')
-      .mockResolvedValueOnce(new Promise(resolve => resolve([fakeUser])));
+      .mockResolvedValueOnce(new Promise(resolve => resolve(fakeUser)));
 
     const httpRequest = {
       body: {
